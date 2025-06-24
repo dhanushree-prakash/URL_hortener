@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>URL Shortener</title>
+  <style>
+    body {
+      background: linear-gradient(to right, #0f172a, #1e3a8a);
+      color: white;
+      font-family: 'Segoe UI', sans-serif;
+      text-align: center;
+      padding: 60px 20px;
+    }
+    input[type="text"] {
+      width: 320px;
+      padding: 12px;
+      border-radius: 6px;
+      border: none;
+      font-size: 16px;
+    }
+    input[type="submit"], button.copy-btn {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #38bdf8;
+      border: none;
+      color: white;
+      font-size: 16px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .loader {
+      border: 6px solid #f3f3f3;
+      border-top: 6px solid #38bdf8;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 20px auto;
+      display: none;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .output {
+      margin-top: 30px;
+      font-size: 18px;
+      color: #38bdf8;
+    }
+    .history {
+      margin-top: 40px;
+      text-align: left;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+      background: #1e293b;
+      padding: 15px;
+      border-radius: 8px;
+    }
+    .history p {
+      margin: 5px 0;
+      font-size: 15px;
+    }
+    a {
+      color: #38bdf8;
+      text-decoration: none;
+    }
+  </style>
+  <script>
+    function showLoader() {
+      document.getElementById("loader").style.display = "block";
+    }
+    function copyLink() {
+      var copyText = document.getElementById("shortUrl");
+      navigator.clipboard.writeText(copyText.innerText).then(() => {
+        alert("Short URL copied to clipboard!");
+      });
+    }
+  </script>
+</head>
+<body>
+  <h1>🔗 Stylish URL Shortener</h1>
+  <form method="POST" onsubmit="showLoader()">
+    <input type="text" name="original" placeholder="Enter a long URL..." required>
+    <br>
+    <input type="submit" value="Shorten">
+  </form>
+
+  <div id="loader" class="loader"></div>
+
+  {% if short_url %}
+    <div class="output">
+      <p>Your short URL:</p>
+      <p id="shortUrl"><a href="{{ short_url }}">{{ short_url }}</a></p>
+      <button class="copy-btn" onclick="copyLink()">📋 Copy</button>
+    </div>
+  {% endif %}
+
+  {% if history %}
+    <div class="history">
+      <h3>📜 Previously Shortened Links:</h3>
+      {% for original, short in history %}
+        <p><strong>🔗</strong> {{ original }} → <a href="{{ short }}">{{ short }}</a></p>
+      {% endfor %}
+    </div>
+  {% endif %}
+</body>
+</html>
